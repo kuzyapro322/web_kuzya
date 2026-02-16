@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block lab %}
+    Лабораторная работа 5
+{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+
+    <style>
+    .nav-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px;
+        flex-wrap: wrap;
+        background-color: white;
+    }
+
+    .nav-button {
+        background: rgb(51, 51, 102);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        margin: 10px 5px;
+        text-decoration: none;
+    }
+
+    .nav-button:hover {
+        background: rgb(102, 102, 153);
+    }
+
+    .username-placeholder {
+        background: rgb(185, 74, 236);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        margin: 10px 5px;
+        text-decoration: none;
+    }
+
+    .username-placeholder:hover {
+        background: rgb(208, 132, 243);
+    }
+
+    
+    </style>
+
+    <h1>База знаний</h1>
+    <div class="nav-container">
+        <a href="/lab5/login" class="nav-button">Вход</a>
+        <a href="/lab5/register" class="nav-button">Регистрация</a>
+        <a href="/lab5/users" class="nav-button">Список пользователей</a>
+        <a href="/lab5/list" class="nav-button">Список статей</a>
+        <a href="/lab5/create" class="nav-button">Создать статью</a>
+        <a href="/lab5/profile" class="username-placeholder">👤 {% if not login %}Anonymous{% else %}{{ name }}{% endif %}</a>
+        <a href="/lab5/logout" class="nav-button" style="background: rgb(231, 46, 46); {% if not login %}display: none{% endif %}">Выйти</a>
+    </div>
+{% endblock %}

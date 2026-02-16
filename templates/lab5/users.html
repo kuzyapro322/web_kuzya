@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block lab %}
+    Лабораторная работа 5
+{% endblock %}
+
+{% block main %}
+<style>
+    .nav-button {
+        background: rgb(51, 51, 102);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        margin: 10px 5px;
+    }
+
+    .nav-button:hover {
+        background: rgb(102, 102, 153);
+    }
+</style>
+    <h1>Список пользователей</h1>
+    <form>
+        <ul>
+            {% for user in users %}
+                <li>
+                    {{ user['name'] }}, логин: {{ user['login'] }}
+                </li>
+            {% endfor %}
+        </ul>
+        <br>
+        <div>
+            <a href="/lab5/" class="nav-button">Назад</a>
+        </div>
+    </form>
+{% endblock %}

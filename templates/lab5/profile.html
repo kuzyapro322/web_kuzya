@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block lab %}
+    Лабораторная работа 5
+{% endblock %}
+
+{% block main %}
+    <h1>Редактировать профиль</h1>
+    <form action="/lab5/profile" method="post">
+        <div>
+            <label>
+                Имя пользователя: <input type="text" name="name" value="{{ name }}" required>
+            </label>
+        </div>
+
+        <div>
+            <label>
+                Старый пароль: <input type="password" name="old_password" required>
+            </label>
+        </div>
+
+        <div>
+            <label>
+                Новый пароль: <input type="password" name="new_password" required>
+            </label>
+        </div>
+
+        <div style="color: red; font-size: 20px; text-align: left;">{{ error }}</div>
+        <button type="submit">Сохранить изменения</button>
+    </form>
+{% endblock %}

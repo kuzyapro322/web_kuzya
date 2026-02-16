@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block lab %}Редактирование статьи{% endblock %}
+
+{% block main %}
+    <h1>Редактирование статьи</h1>
+    
+    {% if error %}
+        <div style="color: red; margin-bottom: 15px;">{{ error }}</div>
+    {% endif %}
+    
+    <form method="post">
+        <div>
+            <label>
+                Заголовок:
+                <input type="text" name="new_title" value="{{ article['title'] }}" maxlength="50" required>
+            </label>
+        </div>
+        <div>
+            <label>
+                Текст статьи:
+                <textarea name="new_article_text" cols="68" rows="10" required>{{ article['article_text'] }}</textarea>
+            </label>
+        </div>
+        <div>
+            <button type="submit">Сохранить изменения</button>
+            <a href="/lab5/list" style="margin-left: 10px;">Отмена</a>
+        </div>
+    </form>
+{% endblock %}

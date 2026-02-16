@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block lab %}
+    Лабораторная работа 5
+{% endblock %}
+
+{% block main %}
+<style>
+    .nav-button {
+        background: rgb(51, 51, 102);
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        margin: 10px 5px;
+    }
+
+    .nav-button:hover {
+        background: rgb(102, 102, 153);
+    }
+</style>
+    <h1>Вы успешно зарегистрировались!</h1>
+    <form>
+        <h2>Добро пожаловать, {{ name }}</h2>
+        <br>
+        <div>
+            <a href="/lab5/" class="nav-button">Перейти</a>
+        </div>
+    </form>
+{% endblock %}

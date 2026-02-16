@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 5{% endblock %}
+
+{% block main %}
+    {% if error %}
+        <h1>{{ error }}</h1>
+    {% else %}
+        <style>
+
+        .article {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 30px;
+            background: white;
+            border: 2px solid rgb(51, 51, 102);
+            border-radius: 5px;
+        }
+
+        .article-actions {
+            margin-top: 20px;
+        }
+
+        .btn-edit, .btn-delete, .btn-favorite {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn-edit {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-favorite {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-favorite:hover {
+            background-color: #218838;
+        }
+
+        .btn-public {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .btn-private {
+            background-color: #6c757d;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        </style>
+            <h1>Статьи</h1>
+            {% for article in articles %}
+                <div class="article">
+                    <h2>{{ article['title'] }}</h2>
+                    {% if not article['is_own'] %}
+                        <p style="color: #666; font-style: italic;">📖 Публичная статья другого пользователя</p>
+                    {% endif %}
+                    <blockquote>{{ article['article_text'] }}</blockquote>
+                    
+                    <div class="article-actions">
+                        {% if login and article['is_own'] %}
+                            <!-- Для своих статей - полный набор кнопок -->
+                            <form action="/lab5/edit/{{ article['id'] }}" method="GET" style="all: unset; display: inline;">
+                                <button type="submit" class="btn-edit">✏️</button>
+                            </form>
+                            
+                            {% if article['is_favorite'] %}
+                                <form action="/lab5/unfavorite/{{ article['id'] }}" method="POST" style="all: unset; display: inline;">
+                                    <button type="submit" class="btn-delete">★ Удалить из избранного</button>
+                                </form>
+                            {% else %}
+                                <form action="/lab5/favorite/{{ article['id'] }}" method="POST" style="all: unset; display: inline;">
+                                    <button type="submit" class="btn-favorite">⭐ В избранное</button>
+                                </form>
+                            {% endif %}
+                            
+                            {% if article['is_public'] %}
+                                <form action="/lab5/private/{{ article['id'] }}" method="POST" style="all: unset; display: inline;">
+                                    <button type="submit" class="btn-public">🔓 Сделать приватной</button>
+                                </form>
+                            {% else %}
+                                <form action="/lab5/public/{{ article['id'] }}" method="POST" style="all: unset; display: inline;">
+                                    <button type="submit" class="btn-private">🔒 Сделать публичной</button>
+                                </form>
+                            {% endif %}
+                            
+                            <form action="/lab5/delete/{{ article['id'] }}" method="POST" style="all: unset; display: inline;">
+                                <button type="submit" class="btn-delete" onclick="return confirm('Удалить статью?')">🗑️</button>
+                            </form>
+                        {% elif login and not article['is_own'] %}
+                            <!-- Для чужих публичных статей - только избранное -->
+                            {% if article['is_favorite'] %}
+                                <form action="/lab5/unfavorite/{{ article['id'] }}" method="POST" style="all: unset; display: inline;">
+                                    <button type="submit" class="btn-delete">★ Удалить из избранного</button>
+                                </form>
+                            {% else %}
+                                <form action="/lab5/favorite/{{ article['id'] }}" method="POST" style="all: unset; display: inline;">
+                                    <button type="submit" class="btn-favorite">⭐ В избранное</button>
+                                </form>
+                            {% endif %}
+                            <span style="color: #666;">🔒 Чужая статья</span>
+                        {% else %}
+                            <!-- Для неавторизованных - только просмотр -->
+                            <span style="color: #666;">📖 Публичная статья</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+    {% endif %}
+{% endblock %}
