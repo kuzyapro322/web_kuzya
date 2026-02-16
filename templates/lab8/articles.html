@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+
+{% block main %}
+        <h1>Список статей</h1>
+        <form action="/lab8/articles" method="get">
+            <input type="text" name="query" placeholder="Поиск..." value="{{ query }}">
+            <button type="submit">Искать</button>
+        </form>
+        <ul style="list-style: none;
+                   padding: 0;">
+            {% for article in articles %}
+                <li>
+                    <div style="max-width: 500px;
+                                margin: 20px auto;
+                                padding: 30px;
+                                background: white;
+                                border: 2px solid rgb(51, 51, 102);
+                                border-radius: 5px;
+                                ">
+                        <strong>{{ article.title }}</strong><br>
+                        {{ article.article_text }}<br>
+                        Автор ID: {{ article.login_id }}<br>
+                        {% if article.is_public %}
+                            Публичная
+                        {% else %}
+                            Приватная
+                        {% endif %}
+                        {% if current_user.is_authenticated and article.login_id == current_user.id %}
+                            {% if article.is_favorite %}
+                                <span style="color: red;">★ В избранном</span>
+                            {% endif %}
+                            <br>
+                            <br>
+                            <form action="/lab8/edit/{{ article.id }}" method="get" style="display:inline;
+                                                                                            margin: 0;
+                                                                                            padding: 0;
+                                                                                            background: none;
+                                                                                            border: none;
+                                                                                            border-radius: 5px;">
+                                <button type="submit">Редактировать</button>
+                            </form>
+                            <br>
+                            <form action="/lab8/delete/{{ article.id }}" method="post" style="display:inline;
+                                                                                                margin: 0;
+                                                                                                padding: 0;
+                                                                                                background: none;
+                                                                                                border: none;
+                                                                                                border-radius: 5px;">
+                                <button type="submit">Удалить</button>
+                            </form>
+                        {% endif %}
+                    </div>    
+                </li>
+            {% else %}
+                <li>Статей пока нет</li>
+            {% endfor %}
+        </ul>
+        <a href="/lab8/" style="background: rgb(51, 51, 102);
+                                color: white;
+                                margin: 10px;
+                                padding: 10px 20px;
+                                border: none;
+                                border-radius: 3px;
+                                cursor: pointer;
+                                text-decoration: none;
+                                position: fixed;
+                                left: 0px;
+                                bottom: 20px;">
+                            На главную</a>
+{% endblock %}

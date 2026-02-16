@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block lab %}Лабораторная работа 8{% endblock %}
+
+{% block main %}
+    <h1>Редактировать статью</h1>
+    <form method="post">
+        <div>
+            <label>Заголовок:
+                <input type="text" name="title" value="{{ article.title }}">
+            </label>
+        </div>
+        <div>
+            <label>Текст статьи:
+                <textarea name="article_text">{{ article.article_text }}</textarea>
+            </label>
+        </div>
+        <div>
+            <label>Публичная:
+                <input type="checkbox" name="is_public" {% if article.is_public %}checked{% endif %}>
+            </label>
+        </div>
+        <div>
+            <label>Избранная:
+                <input type="checkbox" name="is_favorite" {% if article.is_favorite %}checked{% endif %}>
+            </label>
+        </div>
+        <button type="submit">Сохранить</button>
+        <a href="/lab8/articles">Назад</a>
+        <a href="/lab8/">На главную</a>
+        <div>
+            {% if error %}
+                <div style="color:red">{{ error }}</div>
+            {% endif %}
+        </div>
+    </form>
+
+{% endblock %}
