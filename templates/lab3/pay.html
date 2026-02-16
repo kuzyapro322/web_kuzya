@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{# Номер лабораторной работы: #}
+{% block lab %}
+    Лабораторная работа 3
+{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+    <h1>Оплата</h1>
+    
+    <form action="/lab3/success">
+        {# Скрытая ячейка, чтоыб брать отсюда цену #}
+        <input type="hidden" name="price" value="{{ price }}">
+
+        <h2>Сумма к оплате: {{ price }}₽</h2>
+
+        <div>Номер банковской карты:</div>
+        <label>
+            <input type="text" name="card" pattern="\d{16}" required>
+        </label>
+
+
+        <div>Имя держателя карты:</div>
+        <label>
+            <input type="text" name="name" required>
+        </label>
+
+        <div>Номер CVV:</div>
+        <label>
+            <input type="text" name="cvv" size="3" patterm="\d{3}" required>
+        </label>
+
+        <div>
+            <button type="submit">Заказать</button>
+            <a href="/lab3/order">Отказаться</a>
+        </div>
+    </form>
+
+{% endblock %}

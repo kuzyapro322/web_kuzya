@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3 — Билет{% endblock %}
+
+{% block main %}
+    <h1>Железнодорожный билет</h1>
+    
+    <form action="/lab3/ticket">
+        <div>ФИО пассажира:</div>
+        <input type="text" name="fio" required>
+
+        <div>Полка:</div>
+        <select name="berth" required>
+            <option value="" disabled selected>— выберите полку —</option>
+            <option value="нижняя">Нижняя</option>
+            <option value="верхняя">Верхняя</option>
+            <option value="верхняя боковая">Верхняя боковая</option>
+            <option value="нижняя боковая">Нижняя боковая</option>
+        </select>
+
+        <div>Возраст:</div>
+        <input type="number" name="age" min="1" max="120" required>
+
+        <div>Пункт выезда:</div>
+        <input type="text" name="from_city" required>
+
+        <div>Пункт назначения:</div>
+        <input type="text" name="to_city" required>
+
+        <div>Дата поездки:</div>
+        <input type="date" name="date" required>
+
+        <div>Дополнительно:</div>
+        <label>
+            <input type="checkbox" name="linen">С бельём
+        </label>
+        <label>
+            <input type="checkbox" name="baggage">С багажом
+        </label>
+        <label>
+            <input type="checkbox" name="insurance">Со страховкой
+        </label>
+
+        <div>
+            <button type="submit">Оформить билет</button>
+        </div>
+    </form>
+{% endblock %}

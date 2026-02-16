@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3 — Билет{% endblock %}
+
+{% block main %}
+    <h1>Ваш билет</h1>
+    <form>
+        <div>
+            <h2>Железнодорожный билет</h2>
+            
+            <p><strong>ФИО:</strong> {{ fio }}</p>
+            <p><strong>Тип билета:</strong> {% if is_child %}Детский билет{% else %}Взрослый билет{% endif %}</p>
+            <p><strong>Возраст:</strong> {{ age }} лет</p>
+            <p><strong>Полка:</strong> {{ berth }}</p>
+            <p><strong>Маршрут:</strong> {{ from_city }} → {{ to_city }}</p>
+            <p><strong>Дата:</strong> {{ date }}</p>
+            
+            <p><strong>Дополнительно:</strong></p>
+            <ul>
+                {% if linen %}<li>Бельё</li>{% endif %}
+                {% if baggage %}<li>Багаж</li>{% endif %}
+                {% if insurance %}<li>Страховка</li>{% endif %}
+            </ul>
+            
+            <h3>Стоимость: {{ price }} руб.</h3>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <a href="/lab3/ticket">Оформить новый билет</a>
+        </div>
+    </form>
+{% endblock %}

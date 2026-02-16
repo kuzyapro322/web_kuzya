@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3 - Смартфоны{% endblock %}
+
+{% block main %}
+    <h1>Каталог смартфонов</h1>
+    
+    <form>
+        <div>
+            <label>Цена от: 
+                <input type="number" name="min" value="{{ value_min }}" 
+                       placeholder="{{ min_all }}" min="0">
+            </label>
+        </div>
+        <div>
+            <label>Цена до: 
+                <input type="number" name="max" value="{{ value_max }}" 
+                       placeholder="{{ max_all }}" min="0">
+            </label>
+        </div>
+        
+        <div>
+            <button type="submit" name="action" value="search">Искать</button>
+            <button type="submit" name="action" value="reset">Сброс</button>
+        </div>
+    </form>
+
+    <div style="margin: 20px 0;">
+        <strong>Найдено товаров: {{ count }}</strong>
+    </div>
+    
+    {% if count == 0 %}
+        <div style="color: #666; font-style: italic;">
+            Не найдено ни одного товара
+        </div>
+    {% else %}
+        {% for item in items %}
+            <div style="border: 1px solid #ccc; padding: 15px; margin: 10px 0; border-radius: 5px;">
+                <h3>{{ item.name }}</h3>
+                <p><strong>Цена:</strong> {{ item.price }} руб.</p>
+                <p><strong>Бренд:</strong> {{ item.brand }}</p>
+                <p><strong>Цвет:</strong> {{ item.color }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}
