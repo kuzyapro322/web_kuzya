@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block lab %}
+    Лабораторная работа 7
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('static', filename='/lab7/main.js') }}"></script>
+<style>
+    .modal {
+        display: none;
+        z-index: 100;
+        box-shadow: 3px 3px 5px black;
+        background: white;
+        width: 400px;
+        left: 40%;
+        top: 200px;
+        margin-left: 200px;
+        position: absolute;
+        padding: 20px;
+    }
+    .error-mesage {
+        color: red
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+    <h1>Список фильмов</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Название на русском</th>
+                <th>Оригинальное название</th>
+                <th>Год</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody id="film-list"></tbody>
+    </table>
+
+    <script>
+        fillFilmList();
+    </script>
+
+
+    <div>
+        <button onclick="addFilm()">Добавить фильм</button>
+    </div>
+
+    <div class="modal" id="filmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Добавление фильма</h2>
+            </div>
+            
+            <div class="modal-body">
+                <input type="hidden" id="id">
+                
+                <label>
+                    Название фильма на русском языке:
+                    <input type="text" id="title-ru" placeholder="Введите название на русском">
+                    <div id="title-ru-error" class="error-message"></div>
+                </label>
+                
+                <label>
+                    Название фильма на оригинальном языке
+                    <br><i>(если фильм русский, то оставьте пустым):</i>
+                    <input type="text" id="title" placeholder="Оригинальное название">
+                    <div id="title-error" class="error-message"></div>
+                </label>
+                
+                <label>
+                    Год выпуска:
+                    <input type="number" id="year" min="1900" max="2100" placeholder="2024">
+                    <div id="year-error" class="error-message"></div>
+                </label>
+                
+                <label>
+                    Описание:
+                    <textarea id="description" placeholder="Введите описание фильма"></textarea>
+                    <div id="description-error" class="error-message"></div>
+                </label>
+                
+                <div class="modal-buttons">
+                    <button onclick="sendFilm()">Сохранить</button>
+                    <button onclick="cancel()" style="background: rgb(150, 150, 150);">Отмена</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
