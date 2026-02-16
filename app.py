@@ -1,14 +1,23 @@
-from flask import Flask, url_for, request, redirect, abort, render_template
+from flask import Flask, url_for, request
 from datetime import datetime
-from werkzeug.exceptions import HTTPException
+
+from lab1 import lab1
+from lab2 import lab2
+from lab3 import lab3
+
 
 app=Flask(__name__)
+app.register_blueprint(lab1)
+app.register_blueprint(lab2)
+app.register_blueprint(lab3)
+
 
 @app.route("/")
 def title_page():
 
-    lab1 = url_for("lab1")
-    lab2 = url_for("lab2")
+    lab1_url = url_for("lab1.lab")
+    lab2_url = url_for("lab2.lab")
+    lab3_url = url_for("lab3.lab")
 
     return '''
 <!DOCTYPE html>
@@ -28,196 +37,19 @@ def title_page():
 
         <div class="menu"> 
             <ul>
-                <li><a href="''' + lab1 + '''">Лабораторная работа #1</a></li>
-                <li><a href="''' + lab2 + '''">Лабораторная работа #2</a></li>
+                <li><a href="''' + lab1_url + '''">Лабораторная работа #1</a></li>
+                <li><a href="''' + lab2_url + '''">Лабораторная работа #2</a></li>
+                <li><a href="''' + lab3_url + '''">Лабораторная работа #3</a></li>
             </ul>
         </div>
     </main>
     <footer>
         <hr>
-        &copy;Кузнецов Кирилл, ФБИ-34, 3 курс, 2025
+        &copy;Кузнецов Кирилл Сергеевич, ФБИ-34, 3 курс, 2025
     </footer>
 </body>
 </html>
 '''
-
-@app.route("/lab1/")
-def lab1():
-    title_page = url_for('title_page')
-    return '''
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лабораторная 1</title>
-</head>
-<body>
-    <main>
-        <p>Flask — фреймворк для создания веб-приложений на языке
-        программирования Python, использующий набор инструментов
-        Werkzeug, а также шаблонизатор Jinja2. Относится к категории так
-        называемых микрофреймворков — минималистичных каркасов
-        веб-приложений, сознательно предоставляющих лишь самые ба-
-        зовые возможности.</p>
-
-        <br><a href="''' + title_page + '''">Назад в главное меню</a>
-
-        <h2>Список роутов</h2>
-
-        <ul>
-            <li><a href="/lab1/web">/lab1/web</a></li>
-            <li><a href="/lab1/author">/lab1/author</a></li>
-            <li><a href="/lab1/image">/lab1/image</a></li>
-            <li><a href="/lab1/counter">/lab1/counter</a></li>
-            <li><a href="/lab1/counter/clear">/lab1/counter/clear</a></li>
-            <li><a href="lab1/info">lab1/info</a></li>
-            <li><a href="/lab1/create">/lab1/create</a></li>
-            <li><a href="/lab1/400">/lab1/400</a></li>
-            <li><a href="/lab1/401">/lab1/401</a></li>
-            <li><a href="/lab1/402">/lab1/402</a></li>
-            <li><a href="/lab1/403">/lab1/403</a></li>
-            <li><a href="/lab1/405">/lab1/405</a></li>
-            <li><a href="/lab1/418">/lab1/418</a></li>
-            <li><a href="/lab1/500">/lab1/500</a></li>
-            <li><a href="/lab1/aboba">Несуществующая страница</a></li>
-        </ul>
-
-    </main>
-</body>
-</html>
-'''
-
-@app.route("/lab1/web")
-def start():
-    return"""<!doctype html>
-        <html>
-           <body>
-               <h1>web-сервер на flask</h1>
-           </body>
-        </html>""", 200, {
-            'X-Server': 'sample',
-            'Content-Type': 'text/plain; charset=utf-8'
-        }
-
-@app.route("/lab1/author")
-def author():
-
-    name = "Кузнецов Кирилл Сергеевич"
-    group = "ФБИ-34"
-    faculty = "ФБ"
-
-    return"""<!doctype html>
-        <html>
-           <body>
-               <p>Студент: """ + name + """</p>
-               <p>Группа: """ + group + """</p>
-               <p>Факультет: """ + faculty + """</p>
-           </body>
-        </html>"""
-
-@app.route("/lab1/image")
-def image():
-
-    path = url_for("static", filename = "oak.jpg")
-    style = url_for("static", filename = "lab1.css")
-
-    return'''<!doctype html>
-        <html>
-           <head>
-               <link rel="stylesheet" href="''' + style + '''">
-           </head>
-           <body>
-               <h1>Дуб</h1>
-                <img src="''' + path + '''">
-           </body>
-        </html>''', 200, {
-            'Content-Language': 'ru',
-            'X-Img-Name': 'oak',
-            'X-Hotel': 'Trivago'
-        }
-
-count = 0
-
-@app.route("/lab1/counter")
-def counter():
-    global count
-    time = datetime.today()
-    url = request.url
-    client_ip = request.remote_addr
-    counter_clear_route = url_for('clear_counter')
-
-    count += 1
-
-    return'''
-<!doctype html>
-    <html>
-        <body>
-            Сколько раз вы сюда заходили: ''' + str(count) + '''
-            <hr>
-            Дата и время: ''' + str(time) + '''
-            <br> Запрошенный адрес: ''' + url + '''
-            <br> Ваш IP адрес: ''' + client_ip + '''
-            <br><a href="''' +  counter_clear_route + '''">Обнулить счетчик</a>
-        </body>
-    </html>
-'''
-
-@app.route("/lab1/counter/clear")
-def clear_counter():
-    global count
-    count = 0
-
-    return redirect("/lab1/counter")
-
-
-@app.route("/lab1/info")
-def info():
-    return redirect("/lab1/author")
-
-@app.route("/lab1/create")
-def created():
-    return'''
-<!doctype html>
-    <html>
-        <body>
-            <h1>Создано успешно!</h1>
-            <div><i>Что-то создано...</i></div>
-        </body>
-    </html>
-''', 201
-
-@app.route("/lab1/400")
-def error_400():
-    return "Некорректный запрос", 400
-
-@app.route("/lab1/401")
-def error_401():
-    return "Пользователь не авторизован", 401
-
-@app.route("/lab1/402")
-def error_402():
-    return "Необходима оплата", 402
-
-@app.route("/lab1/403")
-def error_403():
-    return "Доступ закрыт", 403
-
-@app.route("/lab1/405")
-def error_405():
-    return "Метод не поддерживается", 405
-
-@app.route("/lab1/418")
-def error_418():
-    return "Я чайник :D", 418
-
-@app.route("/lab1/500")
-def error_500():
-
-    a = 0
-    b = 100
-
-    return b/a
 
 logger = []
 
@@ -284,6 +116,7 @@ def not_found(err):
 </html>
 '''
 
+
 @app.errorhandler(500)
 def not_found(err):
     return '''
@@ -319,113 +152,4 @@ def not_found(err):
 </html>
 '''
 
-@app.route('/lab2/a/')
-def a_slash():
-    return 'ok'
 
-@app.route('/lab2/a')
-def a():
-    return 'ok'
-
-flower_list = [{'name': 'роза', 'price': 400},
-               {'name': 'тюльпан', 'price': 350},
-               {'name': 'незабудка', 'price': 250},
-               {'name': 'ромашка', 'price': 100}]
-
-@app.route('/lab2/flowers/<int:flower_id>')
-def flower_details(flower_id):
-    if flower_id < 0 or flower_id >= len(flower_list):
-        abort(404)
-    else:
-        return render_template('flower_info.html',
-                                flower=flower_list[flower_id])
-
-@app.route('/lab2/add_flower/')
-@app.route('/lab2/add_flower/<name>/<int:price>')
-def add_flower(name=None, price=0):
-    if name:
-        flower_list.append({'name': name, 'price': price})
-        return render_template('flower_result.html', name=name, price=price, flower_list=flower_list, error=False)
-    else:
-        return render_template('flower_result.html', message="Вы не задали имя цветка", error=True), 400
-
-@app.route('/lab2/flowers')
-def list_flowers():
-    return render_template('flower_all.html', flower_list=flower_list)
-
-@app.route('/lab2/flowers/clear')
-def clear_flowers():
-    flower_list.clear()
-    return render_template('flower_clear.html')
-
-@app.route('/lab2/flowers/delete/<int:flower_id>')
-def del_flower(flower_id):
-    if flower_id < 0 or flower_id >= len(flower_list):
-        abort(404)
-    del flower_list[flower_id]
-    return redirect(url_for('list_flowers'))
-
-@app.route('/lab2/example')
-def example():
-    name = 'Кузнецов Кирилл'
-    group = 'ФБИ-34'
-    lab = 2
-    course = 3
-    fruits = [{'name': 'яблоки', 'price': 150},
-              {'name': 'персики', 'price': 250},
-              {'name': 'бананы', 'price': 200}, 
-              {'name': 'абрикосы', 'price': 200},
-              {'name': 'манго', 'price': 300}]
-    return render_template('example.html', name=name,
-                                           group=group,
-                                           lab=lab,
-                                           course=course,
-                                           fruits=fruits
-                            )
-
-@app.route('/lab2/')
-def lab2():
-    return render_template('lab2.html')
-
-@app.route('/lab2/filters')
-def filters():
-    phrase = 'О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных...'
-    return render_template('filter.html',
-                           phrase=phrase)
-
-@app.route('/lab2/calc/<int:a>/<int:b>')
-def calc(a, b):
-    return f'''
-<!doctype html>
-<html>
-  <body>
-    <h1>Выражения</h1>
-    <br> Суммирование: {a} + {b} = {a + b}
-    <br> Вычитание: {a} - {b} = {a - b}
-    <br> Умножение: {a} × {b} = {a * b}
-    <br> Деление: {a} / {b} = {'Делить на 0 нельзя!' if b == 0 else a / b}
-    <br> Возведение в с тепень: {a}<sup>{b}</sup> = {a ** b}
-  </body>
-</html>
-'''
-
-@app.route('/lab2/calc/')
-def calc_default():
-    return redirect('/lab2/calc/1/1')
-
-@app.route('/lab2/calc/<int:a>')
-def calc_missing(a):
-    return redirect(f'/lab2/calc/{a}/1')
-
-from static.book_list import books
-
-@app.route('/lab2/books')
-def book_list():
-    return render_template('books.html',
-                           books=books)
-
-from static.flowers_list import flowers
-
-@app.route('/lab2/tsvetochki')
-def show_berries():
-    return render_template('tsvetochki.html', items=flowers)
