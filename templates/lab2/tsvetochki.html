@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2. Цветы{% endblock %}
+
+{% block main %}
+  <h1>Цветы</h1>
+  <p>Всего объектов: {{ items|length }}</p>
+
+<style>
+    .grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); 
+        gap: 12px; 
+        padding: 15px;
+    }
+    .card { 
+        border: 1px solid #e0e0e0; 
+        border-radius: 6px; 
+        padding: 10px; 
+        text-align: center; 
+        background: white;
+    }
+    .card img { 
+        width: 100%; 
+        height: 130px; 
+        object-fit: cover; 
+        border-radius: 4px; 
+        margin-bottom: 8px;
+    }
+    .name { 
+        font-weight: 600; 
+        margin-top: 6px; 
+        font-size: 14px;
+    }
+    .desc { 
+        font-size: 12px; 
+        color: #555; 
+        margin-top: 4px;
+    }
+</style>
+
+  <div class="grid">
+    {% for it in items %}
+      <div class="card">
+        <img src="{{ url_for('static', filename=it.img) }}" alt="{{ it.name }}">
+        <div class="name">{{ it.name }}</div>
+        <div class="desc">{{ it.desc }}</div>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}
+

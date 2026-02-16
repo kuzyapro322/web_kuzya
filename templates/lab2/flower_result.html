@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{# Номер лабораторной работы: #}
+{% block lab %}
+    Лабораторная работа 2. Цветы
+{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+    {% if error %}
+        <h1>Ошибка</h1>
+        <p>{{ message }}</p>
+    {% else %}
+        <h1>Добавлен новый цветок</h1>
+        <p><b>Название нового цветка:</b> {{ name }}</p>
+        <p><b>Цена нового цветка:</b> {{ price }}</p>
+        <p><b>Всего цветов:</b> {{ flower_list|length }}</p>
+        <p><b>Полный список:</b></p>
+        <ul>
+            {% if flower_list %}
+                {% for flower in flower_list %}
+                    <li>{{ flower.name }} - {{ flower.price }} руб.</li>
+                {% endfor %}
+            {% else %}
+                <li>Список пуст</li>
+            {% endif %}
+        </ul>
+    {% endif %}
+    <p><a href="{{ url_for('lab2.list_flowers') }}">Перейти на главную</a></p>
+{% endblock %}
+
