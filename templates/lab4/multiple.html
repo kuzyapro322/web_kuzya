@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block lab %}
+    Умножение чисел
+{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+    <h1>Результат</h1>
+    <div style="max-width: 500px;
+                margin: 20px auto;
+                padding: 30px;
+                background: white;
+                border: 2px solid rgb(51, 51, 102);
+                border-radius: 5px;">
+        <h2>{{ x1 }} X {{ x2 }} = {{ result }}</h2>
+        <div style="margin-top: 20px; text-align: left;">
+            <a href="{{ url_for('lab4.multiple_form') }}">Назад</a>
+        </div>
+    </div>
+{% endblock %}

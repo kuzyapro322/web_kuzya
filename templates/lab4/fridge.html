@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 4{% endblock %}
+
+{% block main %}
+<h1>Холодильник</h1>
+
+<script>
+    function updateValue(value) {
+        document.getElementById('tempValue').textContent = value + '°C';
+    }
+</script>
+
+<form method="post">
+    <label for="temperature">Температура (°C):</label><br>
+    <input type="range" id="temperature" name="temperature" min="-20" max="10" step="0.1" 
+           value="{{ temperature }}" oninput="updateValue(this.value)">
+    <div id="tempValue" style="font-size: 1.2em; margin: 10px 0;">{{ temperature }}°C</div>
+    <button type="submit">Установить</button>
+
+{% if message %}
+    <p style="margin-top: 15px;">
+        {{ message }}
+    </p>
+
+    {% if snowflakes > 0 %}
+        <p style="font-size: 26px; color: #007bff;">
+            {% for _ in range(snowflakes) %}
+                ❄
+            {% endfor %}
+        </p>
+    {% endif %}
+{% endif %}
+</form>
+
+
+{% endblock %}

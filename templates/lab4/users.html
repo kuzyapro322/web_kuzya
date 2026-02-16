@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block lab %}Лабораторная работа 4{% endblock %}
+{% block main %}
+<h1>Пользователи</h1>
+<form action="/lab4/delete" method="post" style="margin-top:15px;">
+    <table border="1" cellpadding="8" style="border-collapse: collapse; width: 100%; margin-bottom: 20px;">
+        <tr style="background-color: rgb(51, 51, 102); color: white;">
+            <th style="padding: 12px; text-align: left;">Имя</th>
+            <th style="padding: 12px; text-align: left;">Логин</th>
+        </tr>
+        {% for u in users %}
+        <tr style="background-color: {% if loop.index % 2 == 0 %}#f9f9ff{% else %}white{% endif %};">
+            <td style="padding: 10px; border: 1px solid #ccc;">{{ u.name }}</td>
+            <td style="padding: 10px; border: 1px solid #ccc;">{{ u.login }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <button type="submit">Удалить себя</button>
+    <a href="/lab4/edit" style="display: inline-block; background: rgb(51, 51, 102); color: white; padding: 10px 20px; border: none; border-radius: 3px; cursor: pointer; margin: 10px 5px; text-decoration: none;">
+        Редактировать данные
+    </a>
+</form>
+{% endblock %}

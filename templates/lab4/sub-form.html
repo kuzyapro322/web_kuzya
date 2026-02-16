@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block lab %}
+    Вычитание чисел
+{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+    <h1>Вычитание чисел</h1>
+    <form action="/lab4/sub" method="post">
+        Из <input type="number" name="x1"> Вычесть <input type="number" name="x2">
+        <input type="submit" value="=">
+    </form>
+{% endblock %}

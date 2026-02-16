@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block lab %}
+    Вычитание чисел
+{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+    {% if error %}
+            <h1>Ошибка</h1>
+            <div style="max-width: 500px;
+                        margin: 20px auto;
+                        padding: 30px;
+                        background: white;
+                        border: 2px solid rgb(51, 51, 102);
+                        border-radius: 5px;">
+                <div style="color: red; font-size: 20px; text-align: center;">{{ error }}</div>
+                <div style="margin-top: 20px; text-align: left;">
+                    <a href="{{ url_for('lab4.exp_form') }}">Назад</a>
+                </div>
+            </div>
+    {% else %}
+    <h1>Результат</h1>
+    <div style="max-width: 500px;
+                margin: 20px auto;
+                padding: 30px;
+                background: white;
+                border: 2px solid rgb(51, 51, 102);
+                border-radius: 5px;">
+        <h2>{{ x1 }}<sup>{{ x2 }}</sup> = {{ result }}</h2>
+        <div style="margin-top: 20px; text-align: left;">
+            <a href="{{ url_for('lab4.exp_form') }}">Назад</a>
+        </div>
+    </div>
+    {% endif %}
+{% endblock %}

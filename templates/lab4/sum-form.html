@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block lab %}
+    Сложение чисел
+{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+    <h1>Сложение чисел</h1>
+    <form action="/lab4/sum" method="post">
+        <input type="number" name="x1" placeholder="0"> Сложить с <input type="number" name="x2" placeholder="0">
+        <input type="submit" value="=">
+    </form>
+{% endblock %}
