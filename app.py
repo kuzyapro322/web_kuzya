@@ -4,12 +4,17 @@ from datetime import datetime
 from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
+from lab4 import lab4
 
 
 app=Flask(__name__)
+
+app.secret_key = 'секретно-секретный секрет'
+
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
+app.register_blueprint(lab4)
 
 
 @app.route("/")
@@ -18,6 +23,7 @@ def title_page():
     lab1_url = url_for("lab1.lab")
     lab2_url = url_for("lab2.lab")
     lab3_url = url_for("lab3.lab")
+    lab4_url = url_for("lab4.lab")
 
     return '''
 <!DOCTYPE html>
@@ -40,12 +46,13 @@ def title_page():
                 <li><a href="''' + lab1_url + '''">Лабораторная работа #1</a></li>
                 <li><a href="''' + lab2_url + '''">Лабораторная работа #2</a></li>
                 <li><a href="''' + lab3_url + '''">Лабораторная работа #3</a></li>
+                <li><a href="''' + lab4_url + '''">Лабораторная работа #4</a></li>
             </ul>
         </div>
     </main>
     <footer>
         <hr>
-        &copy;Кузнецов Кирилл Сергеевич, ФБИ-34, 3 курс, 2025
+        &copy;Кузнецов Кирилл, ФБИ-34, 3 курс, 2025
     </footer>
 </body>
 </html>
