@@ -1,0 +1,211 @@
+{% extends "base.html" %}
+
+{% block lab %}
+    Лабораторная работа 6
+{% endblock %}
+
+{% block script %}
+<script>
+function getOfficeList() {
+    const url = '/lab6/json-rpc-api/';
+    const json = {
+        'jsonrpc': '2.0',
+        'method': 'info',
+        'id': Math.round(Math.random()*1000)
+    };
+    fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(json)
+    })
+    .then(function(response) {
+        return response.json()
+    })
+    .then(function(data) {
+        const office_list = data.result;
+        const ul = document.getElementById('office-list');
+        ul.innerHTML = '';
+        
+        for(let i = 0; i < office_list.length; i++) {
+            const office = office_list[i];
+            const li = document.createElement('li');
+            
+            const statusClass = office.tenant ? 'status-busy' : 'status-free';
+            const statusText = office.tenant ? `занят (${office.tenant})` : 'свободен';
+            
+            li.innerHTML = `
+                <h2>Офис ${office.number}</h2>
+                <div class="office-price">${office.price || '1000'} руб./день</div>
+                <div class="${statusClass}">${statusText}</div>
+            `;
+
+            const button = document.createElement('button');
+            if (!office.tenant) {
+                button.className = 'btn-book';
+                button.innerText = 'зарезервировать';
+                button.onclick = function() { booking(office.number); };
+            } else {
+                button.className = 'btn-cancel';
+                button.innerText = 'отменить бронь';
+                button.onclick = function() { cancelBooking(office.number); };
+            }
+            
+            li.appendChild(button);
+            ul.appendChild(li);
+        }
+    });
+}
+
+function booking(officeNumber) {  
+    const url = '/lab6/json-rpc-api/';  
+    const json = {  
+        'jsonrpc': '2.0',  
+        'method': 'booking',  
+        'params': officeNumber,  
+        'id': Math.round(Math.random()*1000)  
+    };  
+    fetch(url, {  
+        method: 'POST',  
+        headers: {'Content-Type': 'application/json'},  
+        body: JSON.stringify(json)  
+    })  
+    .then(function(response) {  
+        return response.json();  
+    })  
+    .then(function(data) {
+        if(data.error) {
+            switch(data.error.code) {
+                case 1:
+                    alert('Вы не авторизованы, пожалуйста, авторизуйтесь');
+                    break;
+                case 2:
+                    alert('Офис уже арендуется');
+                    break;
+                case -32601:
+                    alert('Странная ошибка');
+                    break;
+            }
+        }
+        else {
+            document.getElementById('office-list').innerHTML = '';
+            getOfficeList();
+        }
+    });
+}
+
+function cancelBooking(officeNumber) {  
+    const url = '/lab6/json-rpc-api/';  
+    const json = {  
+        'jsonrpc': '2.0',  
+        'method': 'cancellation',  
+        'params': officeNumber,  
+        'id': Math.round(Math.random()*1000)  
+    };  
+    fetch(url, {  
+        method: 'POST',  
+        headers: {'Content-Type': 'application/json'},  
+        body: JSON.stringify(json)  
+    })  
+    .then(function(response) {  
+        return response.json();  
+    })  
+    .then(function(data) {
+        if(data.error) {
+            switch(data.error.code) {
+                case 1:
+                    alert('Вы не авторизованы, пожалуйста, авторизуйтесь');
+                    break;
+                case 3:
+                    alert('Не ваша бронь или офис не забронирован');
+                    break;
+                case 4:
+                    alert('Офис забронирован другим пользователем');
+                    break;
+                case 5:
+                    alert('Офис не забронирован');
+                    break;
+                case -32601:
+                    alert('Странная ошибка');
+                    break;
+            }
+        }
+        else {
+            document.getElementById('office-list').innerHTML = '';
+            getOfficeList();
+            alert('Бронь успешно отменена!');
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    getOfficeList();
+})
+</script>
+{% endblock %}
+
+{% block main %}
+<style>
+    ul {
+        padding: 0;
+        margin: 0;
+    }
+    li {
+        max-width: 400px;
+        margin: 20px auto;
+        padding: 30px;
+        background: white;
+        border: 2px solid rgb(51, 51, 102);
+        border-radius: 5px;
+        list-style: none;
+    }
+    .office-price {
+        font-size: 1.3em;
+        font-weight: bold;
+        color: #2E8B57;
+        background: #f0fff0;
+        padding: 8px;
+        border-radius: 6px;
+        margin: 10px 0;
+        border: 1px solid #90EE90;
+    }
+    .status-free {
+        color: #2E8B57;
+        font-weight: bold;
+        background: #f0fff0;
+        padding: 8px;
+        border-radius: 6px;
+        margin: 10px 0;
+    }
+
+    .status-busy {
+        color: #DC143C;
+        font-weight: bold;
+        background: #fff0f0;
+        padding: 8px;
+        border-radius: 6px;
+        margin: 10px 0;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    .btn-book {
+        background: #4CAF50;
+        color: white;
+    }
+
+    .btn-cancel {
+        background: #ff6b6b;
+        color: white;
+    }
+</style>
+    <h1>Список кабинетов</h1>
+    <ul id="office-list"></ul>
+{% endblock %}
