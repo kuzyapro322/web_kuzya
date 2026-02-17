@@ -4,7 +4,7 @@ from static.lab2.book_list import books
 from static.lab2.flowers_list import flowers
 
 
-lab2 = Blueprint('lab2', __name__)
+lab2 = Blueprint('lab2', __name__) 
 
 
 @lab2.route('/lab2/a/')
