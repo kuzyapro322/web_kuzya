@@ -18,7 +18,7 @@ from lab8 import lab8
 from lab9 import lab9
 
 
-app=Flask(__name__)
+app=Flask(__name__) 
 
 login_manager = LoginManager()
 login_manager.login_view = 'lab8.login'
