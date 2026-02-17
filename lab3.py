@@ -4,7 +4,7 @@ from flask import Blueprint, render_template, request, make_response, redirect, 
 lab3 = Blueprint('lab3', __name__)
 
 @lab3.route('/lab3/')
-def lab():
+def lab(): 
     name = request.cookies.get('name') or 'Аноним'
     age = request.cookies.get('age') or 'Неизвестный'
     name_color = request.cookies.get('name_color') or 'black'
