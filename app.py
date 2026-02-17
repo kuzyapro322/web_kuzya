@@ -98,7 +98,7 @@ def title_page():
     </main>
     <footer>
         <hr>
-        &copy;Саморуков Никита, ФБИ-34, 3 курс, 2025
+        &copy;Кузнецов Кирилл, ФБИ-34, 3 курс, 2025
     </footer>
 </body>
 </html>
