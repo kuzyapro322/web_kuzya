@@ -15,6 +15,7 @@ from lab5 import lab5
 from lab6 import lab6
 from lab7 import lab7
 from lab8 import lab8
+from lab9 import lab9
 
 
 app=Flask(__name__)
@@ -54,6 +55,7 @@ app.register_blueprint(lab5)
 app.register_blueprint(lab6)
 app.register_blueprint(lab7)
 app.register_blueprint(lab8)
+app.register_blueprint(lab9)
 
 @app.route("/")
 def title_page():
@@ -66,6 +68,7 @@ def title_page():
     lab6_url = url_for("lab6.lab")
     lab7_url = url_for("lab7.lab")
     lab8_url = url_for("lab8.lab")
+    lab9_url = url_for("lab9.lab")
 
     return '''
 <!DOCTYPE html>
@@ -93,6 +96,7 @@ def title_page():
                 <li><a href="''' + lab6_url + '''">Лабораторная работа #6</a></li>
                 <li><a href="''' + lab7_url + '''">Лабораторная работа #7</a></li>
                 <li><a href="''' + lab8_url + '''">Лабораторная работа #8</a></li>
+                <li><a href="''' + lab9_url + '''">Лабораторная работа #9</a></li>
             </ul>
         </div>
     </main>
