@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 9{% endblock %}
+
+{% block script %}{% endblock %}
+
+{% block main %}
+
+<div class="new-year-theme">
+    <h1 style="color:white"> Новогодние поздравления </h1>
+    
+    
+    <div class="user-panel">
+        {% if is_authenticated %}
+        <div>
+            <span class="welcome-text">Добро пожаловать, <strong>{{ name }}</strong>!</span>
+            <a href="{{ url_for('lab9.logout') }}" style="margin: 5px; color:white;">Выйти</a>
+        </div>
+        {% else %}
+        <div style="margin: 10px;">
+            <a href="{{ url_for('lab9.login') }}" class="btn login-btn">Войти</a>
+            <a href="{{ url_for('lab9.register') }}" class="btn register-btn">Зарегистрироваться</a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <div class="stats-panel">
+        <p>Вы открыли: <span id="user-opened-count">{{ opened_count }}</span> из 3 коробок</p>
+        <p>Осталось закрытых: <span id="closed-count">{{ closed_count }}</span></p>
+        {% if is_authenticated %}
+        <p class="auth-status"> Вы авторизованы как: {{ user_login }}</p>
+        {% else %}
+        <p class="auth-status">Вы не авторизованы</p>
+        {% endif %}
+    </div>
+    
+    {% if is_authenticated %}
+    <div class="santa-panel">
+        <h3>Панель Деда Мороза</h3>
+        <button id="reset-btn" class="btn santa-btn">Наполнить все коробки заново</button>
+    </div>
+    {% endif %}
+    
+
+    <div id="gift-popup" class="gift-popup" style="display: none;">
+        <div class="gift-popup-content">
+            <button class="close-popup" onclick="closeGiftPopup()">×</button>
+            <h3> Ваш подарок!</h3>
+            <p id="gift-message-text"></p>
+            <div id="gift-preview"></div>
+            <button class="ok-button" onclick="closeGiftPopup()">OK</button>
+        </div>
+    </div>
+    
+    
+    
+    <div class="boxes-container">
+        {% for box in boxes %}
+        <div class="gift-box {% if box.is_opened %}opened{% endif %} {% if box.requires_auth %}requires-auth{% endif %}" 
+             data-id="{{ box.box_id }}"
+             data-gift="{{ box.gift_image }}"
+             data-message="{{ box.message }}"
+             data-requires-auth="{{ box.requires_auth }}"
+             style="left: {{ positions[loop.index0][0] }}%; top: {{ positions[loop.index0][1] }}%;">
+            <div class="box-content">
+                {% if box.is_opened %}
+                    <div class="after-open-box">
+                        <img src="/static/lab9/opened_box.png" alt="Открытая коробка" class="box-img">
+                    </div>
+                    <div class="box-status">Открыта</div>
+                {% else %}
+                    <div class="before-open-box">
+                        <img src="/static/lab9/box_closed_{{ loop.index }}.png" alt="Коробка {{ loop.index }}" class="box-img">
+                        
+                    </div>
+                    <div class="box-status">Закрыта</div>
+                {% endif %}
+                <div class="box-number">
+                    Коробка {{ loop.index }}
+                    {% if box.requires_auth %}
+                    <span class="auth-badge">🔒</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="hint">
+        <p> <strong>Подсказка:</strong> Коробки с символом 🔒 открываются только авторизованным пользователям!</p>
+      
+    </div>
+</div>
+
+<script>
+// Массив для хранения ID открытых коробок
+let openedBoxes = [];
+
+// Функция открытия коробки
+function openBox(boxId) {
+    // Сначала проверяем коробку через API
+    fetch(`/lab9/rest-api/boxes/${boxId}/open`, {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(function(response) {
+        if (!response.ok) {
+            return response.json().then(function(err) { 
+                throw err; 
+            });
+        }
+        return response.json();
+    })
+    .then(function(data) {
+        if (data.error) {
+            if (data.requires_auth) {
+                showAuthPopup(boxId);
+            } else {
+                showError(data.error);
+            }
+        } else {
+            // Обновляем счетчики
+            document.getElementById('user-opened-count').textContent = data.user_opened_count;
+            document.getElementById('closed-count').textContent = data.closed_count;
+            
+            showGiftPopup(data.message, data.gift);
+            
+            updateBoxAfterOpen(boxId, data.gift);
+            
+            openedBoxes.push(boxId);
+        }
+    })
+    .catch(function(error) {
+        if (error.requires_auth) {
+            showAuthPopup(boxId);
+        } else {
+            showError(error.error || 'Ошибка при открытии коробки');
+        }
+    });
+}
+// Функция показа подарка с требованием авторизации
+function showAuthPopup(boxId) {
+    document.getElementById('auth-popup-text').textContent = 
+        `Для открытия коробки ${parseInt(boxId) + 1} необходимо авторизоваться.`;
+    document.getElementById('auth-popup').style.display = 'flex';
+}
+
+function closeAuthPopup() {
+    document.getElementById('auth-popup').style.display = 'none';
+}
+// Функция сброса всех коробок (функция Деда Мороза)
+function resetAllBoxes() {
+    if (!confirm(' Дед Мороз, вы уверены, что хотите наполнить все коробки заново?')) {
+        return;
+    }
+    
+    fetch('/lab9/rest-api/boxes/reset', {
+        method: 'POST'
+    })
+    .then(function(response) {
+        if (!response.ok) {
+            return response.json().then(function(err) { 
+                throw err; 
+            });
+        }
+        return response.json();
+    })
+    .then(function(data) {
+        if (data.error) {
+            showError(data.error);
+        } else {
+            alert(data.message);
+            location.reload(); 
+        }
+    })
+    .catch(function(error) {
+        showError(error.error || 'Ошибка при сбросе коробок');
+    });
+}
+
+
+function showError(message) {
+    alert(message);
+}
+// Функция показа подарка
+function closeGiftPopup() {
+    document.getElementById('gift-popup').style.display = 'none';
+}
+
+function showGiftPopup(message, giftImage) {
+    document.getElementById('gift-message-text').textContent = message;
+    document.getElementById('gift-preview').innerHTML = `<img src="/static/lab9/${giftImage}" alt="Ваш подарок">`;
+    document.getElementById('gift-popup').style.display = 'flex';
+}
+
+function updateBoxAfterOpen(boxId, giftImage) {
+    const boxElement = document.querySelector(`.gift-box[data-id="${boxId}"]`);
+    if (!boxElement) return;
+     // Меняем картинку коробки на открытую
+    const img = boxElement.querySelector('.box-img');
+    if (img) {
+        img.src = '/static/lab9/opened_box.png';
+    }
+    
+    const container = boxElement.querySelector('.before-open-box');
+    if (container) {
+        container.className = 'after-open-box';
+    }
+    
+    const status = boxElement.querySelector('.box-status');
+    if (status) {
+        status.textContent = 'Открыта';
+    }
+    
+    const lock = boxElement.querySelector('.auth-lock');
+    if (lock) {
+        lock.style.display = 'none';
+    }
+    
+    boxElement.classList.add('opened');
+}
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Назначаем обработчики на коробки
+    const boxes = document.querySelectorAll('.gift-box:not(.opened)');
+    boxes.forEach(function(box) {
+        box.addEventListener('click', function() {
+            // Проверяем, не открыта ли уже коробка
+            if (this.classList.contains('opened')) {
+                showError('Эта коробка уже открыта!');
+                return;
+            }
+            
+            const boxId = this.dataset.id;
+            openBox(parseInt(boxId));
+        });
+    });
+    // Назначаем обработчик на кнопку Деда Мороза
+    const resetBtn = document.getElementById('reset-btn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetAllBoxes);
+    }
+    
+});
+</script>
+{% endblock %}
