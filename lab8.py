@@ -8,7 +8,7 @@ from psycopg2.extras import RealDictCursor
 import sqlite3
 from os import path
 from flask_login import logout_user
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash 
 from sqlalchemy import func 
 
 lab8 = Blueprint('lab8', __name__)
