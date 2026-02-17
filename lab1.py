@@ -192,4 +192,5 @@ def error_500():
     a = 0
     b = 100
 
+
     return b/a
